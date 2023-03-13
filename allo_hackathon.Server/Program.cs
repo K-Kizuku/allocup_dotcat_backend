@@ -2,6 +2,8 @@
 using Server.Silo.Api;
 using Orleans.Providers;
 using Microsoft.Extensions.Hosting;
+using Orleans.Persistence.AzureStorage;
+using System.Configuration;
 
 await Host.CreateDefaultBuilder(args)
     .UseOrleans((ctx, builder) =>
@@ -10,6 +12,13 @@ await Host.CreateDefaultBuilder(args)
         builder.AddMemoryGrainStorageAsDefault();
         builder.AddMemoryStreams<DefaultMemoryMessageBodySerializer>("MemoryStreams");
         builder.AddMemoryGrainStorage("PubSubStore");
+        builder.AddAzureTableGrainStorage(
+        name: "allostragetest",
+        configureOptions: options =>
+        {
+            options.ConfigureTableServiceClient(
+                System.Configuration.ConfigurationManager.AppSettings["CONNECTION_STRING"] ?? "");
+        });
     })
     .ConfigureWebHostDefaults(webBuilder =>
     {
@@ -33,7 +42,9 @@ await Host.CreateDefaultBuilder(args)
                                 .WithOrigins(
                                     "http://localhost:62653",
                                     "http://localhost:62654",
-                                    "https://polite-desert-0be8aa100.2.azurestaticapps.net")
+                                    "https://polite-desert-0be8aa100.2.azurestaticapps.net",
+                                    "https://yellow-forest-0e4103300.2.azurestaticapps.net"
+                                    )
                                 .AllowAnyMethod()
                                 .AllowAnyHeader();
                         });
@@ -55,6 +66,7 @@ await Host.CreateDefaultBuilder(args)
                 });
             })
             .UseUrls("http://localhost:5000");
+
     })
     .ConfigureServices(services =>
     {
