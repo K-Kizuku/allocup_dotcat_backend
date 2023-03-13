@@ -43,7 +43,7 @@ public class TransactionGrain : Grain, ITransactionGrains
         // register the item with its owner list
         await GrainFactory.GetGrain<ITransactionManagerGrain>("Transaction")
             .RegisterAsync(transaction.Key);
-        
+
 
         //// for sample debugging
         //_logger.LogInformation(
