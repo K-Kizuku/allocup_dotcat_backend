@@ -31,7 +31,7 @@ public class UserManagerGrain : Grain, IUserManagerGrain
     public async Task<string> GetUserNameAsync(Guid guid)
     {
         var temp = await GrainFactory.GetGrain<IUserGrains>(guid).GetAsync(guid);
-        return temp.Name;
+        return temp.UserName;
     }
 
     [GenerateSerializer]
