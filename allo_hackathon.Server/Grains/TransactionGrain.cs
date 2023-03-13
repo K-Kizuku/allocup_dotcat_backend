@@ -15,7 +15,7 @@ public class TransactionGrain : Grain, ITransactionGrains
 
     public TransactionGrain(
         ILogger<UserGrain> logger,
-        [PersistentState("TransactionState")] IPersistentState<TransactionState> state)
+        [PersistentState("TransactionState", "strage")] IPersistentState<TransactionState> state)
     {
         _logger = logger;
         _state = state;
@@ -43,6 +43,7 @@ public class TransactionGrain : Grain, ITransactionGrains
         // register the item with its owner list
         await GrainFactory.GetGrain<ITransactionManagerGrain>("Transaction")
             .RegisterAsync(transaction.Key);
+
 
 
         //// for sample debugging

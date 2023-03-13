@@ -13,9 +13,10 @@ await Host.CreateDefaultBuilder(args)
         builder.AddMemoryStreams<DefaultMemoryMessageBodySerializer>("MemoryStreams");
         builder.AddMemoryGrainStorage("PubSubStore");
         builder.AddAzureTableGrainStorage(
-        name: "allostragetest",
+        name: "strage",
         configureOptions: options =>
         {
+            //options.UseJson = true;
             options.ConfigureTableServiceClient(
                 System.Configuration.ConfigurationManager.AppSettings["CONNECTION_STRING"] ?? "");
         });
