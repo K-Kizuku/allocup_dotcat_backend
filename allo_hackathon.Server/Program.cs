@@ -32,7 +32,8 @@ await Host.CreateDefaultBuilder(args)
                             builder
                                 .WithOrigins(
                                     "http://localhost:62653",
-                                    "http://localhost:62654")
+                                    "http://localhost:62654",
+                                    "https://polite-desert-0be8aa100.2.azurestaticapps.net")
                                 .AllowAnyMethod()
                                 .AllowAnyHeader();
                         });
