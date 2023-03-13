@@ -9,11 +9,11 @@ namespace Server.Silo.Api;
 
 [ApiController]
 [Route("api/user")]
-public class TodoController : ControllerBase
+public class UserController : ControllerBase
 {
     private readonly IGrainFactory _factory;
 
-    public TodoController(IGrainFactory factory) => _factory = factory;
+    public UserController(IGrainFactory factory) => _factory = factory;
 
     [HttpGet("{uuid}")]
     public Task<Users> GetAsync([Required] Guid uuid) => _factory.GetGrain<IUserGrains>("Users").GetAsync(uuid);
