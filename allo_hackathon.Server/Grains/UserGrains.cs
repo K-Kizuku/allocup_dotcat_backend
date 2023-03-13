@@ -9,14 +9,14 @@ namespace Server.Grains;
 public class UserGrain : Grain, IUserGrains
 {
     private readonly ILogger<Grain> _logger;
-    private readonly IPersistentState<State> _state;
+    private readonly IPersistentState<UserState> _state;
 
     private string GrainType => nameof(UserGrain);
     private string GrainKey = "Users";
 
     public UserGrain(
         ILogger<UserGrain> logger,
-        [PersistentState("State")] IPersistentState<State> state)
+        [PersistentState("UserState")] IPersistentState<UserState> state)
     {
         _logger = logger;
         _state = state;
@@ -62,39 +62,8 @@ public class UserGrain : Grain, IUserGrains
         //    .Ignore();
     }
 
-    //public async Task ClearAsync()
-    //{
-    //    // fast path for already cleared state
-    //    if (_state.State.Item is null) return;
-
-    //    // hold on to the keys
-    //    var itemKey = _state.State.Item.Key;
-    //    var ownerKey = _state.State.Item.OwnerKey;
-
-    //    // unregister from the registry
-    //    await GrainFactory.GetGrain<ITodoManagerGrain>(ownerKey)
-    //        .UnregisterAsync(itemKey);
-
-    //    // clear the state
-    //    await _state.ClearStateAsync();
-
-    //    // for sample debugging
-    //    _logger.LogInformation(
-    //        "{@GrainType} {@GrainKey} is now cleared",
-    //        GrainType, GrainKey);
-
-    //    // notify listeners - best effort only
-    //    this.GetStreamProvider("MemoryStreams")
-    //        .GetStream<TodoNotification>(StreamId.Create(nameof(ITodoGrain), itemKey))
-    //        .OnNextAsync(new TodoNotification(itemKey, null))
-    //        .Ignore();
-
-    //    // no need to stay alive anymore
-    //    DeactivateOnIdle();
-    //}
-
     [GenerateSerializer]
-    public class State
+    public class UserState
     {
         [Id(0)]
         public Users? User { get; set; }

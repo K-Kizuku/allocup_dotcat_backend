@@ -17,7 +17,7 @@ await Host.CreateDefaultBuilder(args)
             .ConfigureServices(services =>
             {
                 services.AddControllers()
-                    .AddApplicationPart(typeof(TodoController).Assembly);
+                    .AddApplicationPart(typeof(UserController).Assembly);
 
                 services.AddSwaggerGen(options =>
                 {
