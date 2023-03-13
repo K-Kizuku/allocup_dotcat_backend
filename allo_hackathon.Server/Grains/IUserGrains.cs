@@ -3,7 +3,7 @@ using Server.Models;
 
 namespace Server.Grains;
 
-public interface IUserGrains : IGrainWithStringKey
+public interface IUserGrains : IGrainWithGuidKey
 {
     Task SetAsync(Users users);
 
@@ -11,6 +11,6 @@ public interface IUserGrains : IGrainWithStringKey
 
     Task<Users> GetAsync(Guid guid);
 
-    Task<List<Users>> GetAllAsync();
+    //Task<List<Users>> GetAllAsync();
 }
 

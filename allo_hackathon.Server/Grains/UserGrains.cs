@@ -12,7 +12,7 @@ public class UserGrain : Grain, IUserGrains
     private readonly IPersistentState<UserState> _state;
 
     private string GrainType => nameof(UserGrain);
-    private string GrainKey = "Users";
+    private Guid GrainKey => this.GetPrimaryKey();
 
     public UserGrain(
         ILogger<UserGrain> logger,
@@ -27,17 +27,17 @@ public class UserGrain : Grain, IUserGrains
         return Task.FromResult(_state.State.Users[guid]);
     }
 
-    public Task<List<Users>> GetAllAsync()
-    {
-        var UserList = new List<Users>(_state.State.Users.Values);
-        return Task.FromResult(UserList);
+    //public Task<List<Users>> GetAllAsync()
+    //{
+    //    var UserList = new List<Users>(_state.State.Users.Values);
+    //    return Task.FromResult(UserList);
 
-    }
+    //}
 
     public async Task SetAsync(Users users)
     {
         // ensure the key is consistent
-        if ("Users" != GrainKey)
+        if (users.Key != GrainKey)
         {
             throw new InvalidOperationException();
         }
@@ -46,9 +46,9 @@ public class UserGrain : Grain, IUserGrains
         _state.State.Users.Add(users.Key, users);
         await _state.WriteStateAsync();
 
-        //// register the item with its owner list
-        //await GrainFactory.GetGrain<ITodoManagerGrain>(item.OwnerKey)
-        //    .RegisterAsync(item.Key);
+        // register the item with its owner list
+        await GrainFactory.GetGrain<IUserManagerGrain>("Users")
+            .RegisterAsync(users.Key);
 
         //// for sample debugging
         //_logger.LogInformation(

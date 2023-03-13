@@ -16,10 +16,19 @@ public class UserController : ControllerBase
     public UserController(IGrainFactory factory) => _factory = factory;
 
     [HttpGet("{uuid}")]
-    public Task<Users> GetAsync([Required] Guid uuid) => _factory.GetGrain<IUserGrains>("Users").GetAsync(uuid);
+    public Task<Users> GetAsync([Required] Guid uuid) => _factory.GetGrain<IUserGrains>(uuid).GetAsync(uuid);
 
     [HttpGet("all")]
-    public Task<List<Users>> GetAllAsync() => _factory.GetGrain<IUserGrains>("Users").GetAllAsync();
+    public async Task<List<Users>> GetAllAsync() {
+        List<Users> userList = new List<Users>();
+        var users = await _factory.GetGrain<IUserManagerGrain>("Users").GetAllAsync();
+        foreach(Guid id in users)
+        {
+            var temp = await _factory.GetGrain<IUserGrains>(id).GetAsync(id);
+            userList.Add(temp);
+        }
+        return userList;
+    } 
 
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] UsersModel model)
@@ -30,7 +39,7 @@ public class UserController : ControllerBase
         }
 
         var user = new Users(model.Key, DateTime.Now, model.Name, false,new TokenItem[0], new TokenItem[0], new TokenItem[0], 0.0,null);
-        await _factory.GetGrain<IUserGrains>("Users").SetAsync(user);
+        await _factory.GetGrain<IUserGrains>(model.Key).SetAsync(user);
         return Ok();
     }
     public record class UsersModel(
