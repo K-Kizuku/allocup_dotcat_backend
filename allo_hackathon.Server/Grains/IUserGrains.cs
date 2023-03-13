@@ -1,13 +1,16 @@
-﻿using Server.Models;
+﻿using System.Collections.Immutable;
+using Server.Models;
 
 namespace Server.Grains;
 
-public interface IUserGrains : IGrainWithGuidKey
+public interface IUserGrains : IGrainWithStringKey
 {
     Task SetAsync(Users users);
 
     //Task ClearAsync();
 
-    Task<Users?> GetAsync();
+    Task<Users> GetAsync(Guid guid);
+
+    Task<List<Users>> GetAllAsync();
 }
 
