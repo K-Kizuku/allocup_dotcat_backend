@@ -16,7 +16,7 @@ public class UserGrain : Grain, IUserGrains
 
     public UserGrain(
         ILogger<UserGrain> logger,
-        [PersistentState("UserState")] IPersistentState<UserState> state)
+        [PersistentState("UserState","strage")] IPersistentState<UserState> state)
     {
         _logger = logger;
         _state = state;
