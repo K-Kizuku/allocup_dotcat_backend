@@ -17,6 +17,8 @@
     <None Remove="Swashbuckle.AspNetCore" />
     <None Remove="Api\" />
     <None Remove="Microsoft.Extensions.Hosting" />
+    <None Remove="Grains\" />
+    <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
@@ -28,5 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Api\" />
+    <Folder Include="Grains\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>
