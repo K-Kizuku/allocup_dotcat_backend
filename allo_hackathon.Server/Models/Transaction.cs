@@ -6,7 +6,7 @@
 public record class Transaction(
     // トランザクションID
     Guid Key,
-    Guid TokenId,
+    string TokenName,
     DateTime? CreatedAt,
     // 誰から送られたか
     string SendFrom,

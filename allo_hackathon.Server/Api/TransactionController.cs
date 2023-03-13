@@ -38,17 +38,15 @@ public class TransactionController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-
-        var transaction = new Transaction(model.Key, model.TokenId, DateTime.Now, model.SendFrom, model.SendTo, model.Cost, model.IsFarst);
-        await _factory.GetGrain<ITransactionGrains>(model.Key).SetAsync(transaction);
+        Guid guid = Guid.NewGuid();
+        var transaction = new Transaction(guid, model.TokenName, DateTime.Now, model.SendFrom, model.SendTo, model.Cost, model.IsFarst);
+        await _factory.GetGrain<ITransactionGrains>(guid).SetAsync(transaction);
         return Ok();
     }
 
     public record class TransactionModel(
     // トランザクションID
-    [Required] Guid Key,
-    [Required] Guid TokenId,
-    [Required] DateTime? CreatedAt,
+    [Required] string TokenName,
     // 誰から送られたか
     [Required] string SendFrom,
     // 誰に送られたか
