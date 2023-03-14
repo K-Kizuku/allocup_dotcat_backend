@@ -10,4 +10,5 @@ public interface IStockListGrains : IGrainWithGuidKey
     Task<List<StockList>> GetAsync();
     Task EditAsync(StockList stockList, Guid guid);
     //Task<ImmutableArray<Transaction>> GetAllAsync();
+    Task RemoveAsync(Guid guid);
 }

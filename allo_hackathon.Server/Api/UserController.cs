@@ -4,6 +4,7 @@ using Server.Models;
 using System.ComponentModel.DataAnnotations;
 using Orleans;
 using System.Text.Json;
+using System.Reflection;
 //using Server.Grains;
 
 namespace Server.Silo.Api;
@@ -110,6 +111,13 @@ public class UserController : ControllerBase
         var uuid = await _factory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(model.myName);
         await _factory.GetGrain<IUserGrains>(uuid).AddTokenAsync(model.myName, model.cost);
         return Ok();
+    }
+
+    [HttpGet("debug/{name}")]
+    public async Task<ActionResult> DebugAsync([Required] string name)
+    {
+        var uuid = await _factory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(name);
+        return Ok(uuid);
     }
 
     public record class UsersModel(
