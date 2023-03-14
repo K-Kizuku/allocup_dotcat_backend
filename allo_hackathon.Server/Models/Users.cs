@@ -11,6 +11,10 @@ public record class Users(
     bool IsReceived,
     // 今持ってるトークンのリスト
     Dictionary<string, double> TokenList,
+    // 自分がフォローしている人のリスト
+    List<string> Follows,
+    // 自分がフォローされている人のリスト
+    List<string> Followers,
     // 自分のトークンの合計数
     double? MyToken,
     DateTime? DeletedAt = null);
@@ -25,6 +29,10 @@ public record class ResponseUsers(
     bool IsReceived,
     // 今持ってるトークンのリスト
     Dictionary<string, double> TokenList,
+    // 自分がフォローしている人のリスト
+    List<string> Follows,
+    // 自分がフォローされている人のリスト
+    List<string> Followers,
     // 自分のトークンの合計数
     double? MyToken,
     DateTime? DeletedAt = null);

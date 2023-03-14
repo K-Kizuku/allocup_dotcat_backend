@@ -62,11 +62,41 @@ public class UserGrain : Grain, IUserGrains
         //    .Ignore();
     }
 
+    public Task<List<string>> GetFollowsAsync() => Task.FromResult(_state.State.Users[GrainKey].Follows);
+
+    public Task<List<string>> GetFollowersAsync() => Task.FromResult(_state.State.Users[GrainKey].Followers);
+
+
+    public async Task<List<string>> AddFollowAsync(string myName, string followName)
+    {
+        var uuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(myName);
+        if (uuid != GrainKey)
+        {
+            throw new InvalidOperationException();
+        }
+        _state.State.Users[uuid].Follows.Add(followName);
+        var followUuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(followName);
+        await GrainFactory.GetGrain<IUserGrains>(followUuid).AddFollowerAsync(followName, myName);
+        //await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(myName);
+        return await this.GetFollowsAsync();
+    }
+
+    public async Task AddFollowerAsync(string myName, string followName)
+    {
+        var uuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(myName);
+        if (uuid != GrainKey)
+        {
+            throw new InvalidOperationException();
+        }
+        _state.State.Users[uuid].Followers.Add(followName);
+        //return await this.GetFollowersAsync();
+    }
+
     [GenerateSerializer]
     public class UserState
     {
         [Id(0)]
-        public Users? User { get; set; }
+        //public Users User { get; set; }
         //public HashSet<Users> Users { get; set; } = new();
         public Dictionary<Guid, Users> Users = new Dictionary<Guid, Users>();
     }
