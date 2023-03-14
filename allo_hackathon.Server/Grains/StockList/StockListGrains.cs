@@ -29,10 +29,10 @@ public class StockListGrain : Grain, IStockListGrains
 
 
 
-    public async Task SetAsync(StockList stockList)
+    public async Task SetAsync(StockList stockList, Guid guid)
     {
         // ensure the key is consistent
-        if (stockList.OwnerId != GrainKey)
+        if (guid != GrainKey)
         {
             throw new InvalidOperationException();
         }
