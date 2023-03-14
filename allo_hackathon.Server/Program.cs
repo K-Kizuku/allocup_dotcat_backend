@@ -46,8 +46,9 @@ await Host.CreateDefaultBuilder(args)
                                 .WithOrigins(
                                     "http://localhost:62653",
                                     "http://localhost:62654",
-                                    "https://polite-desert-0be8aa100.2.azurestaticapps.net",
-                                    "https://yellow-forest-0e4103300.2.azurestaticapps.net"
+                                    "http://localhost:5171",
+                                    "https://icy-rock-0099e6b00.2.azurestaticapps.net",
+                                    "https://brave-field-0f0f09e00.2.azurestaticapps.net"
                                     )
                                 .AllowAnyMethod()
                                 .AllowAnyHeader();
