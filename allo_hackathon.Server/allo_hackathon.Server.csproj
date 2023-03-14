@@ -21,6 +21,10 @@
     <None Remove="Models\" />
     <None Remove="Microsoft.Orleans.Persistence.AzureStorage" />
     <None Remove="System.Configuration.ConfigurationManager" />
+    <None Remove="Grains\StockList\" />
+    <None Remove="Grains\Transaction\" />
+    <None Remove="Grains\Users\" />
+    <None Remove="Grains\Token\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
@@ -36,5 +40,9 @@
     <Folder Include="Api\" />
     <Folder Include="Grains\" />
     <Folder Include="Models\" />
+    <Folder Include="Grains\StockList\" />
+    <Folder Include="Grains\Transaction\" />
+    <Folder Include="Grains\Users\" />
+    <Folder Include="Grains\Token\" />
   </ItemGroup>
 </Project>
