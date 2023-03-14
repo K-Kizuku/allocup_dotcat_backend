@@ -19,6 +19,19 @@ public class UserController : ControllerBase
     [HttpGet("{uuid}")]
     public Task<Users> GetAsync([Required] Guid uuid) => _factory.GetGrain<IUserGrains>(uuid).GetAsync(uuid);
 
+    [HttpGet("serch/{serch}")]
+    public async Task<ActionResult> GetSerchUserAsync([Required] string serch)
+    {
+        List<Guid> users = await _factory.GetGrain<IUserManagerGrain>("Users").SerchUserAsync(serch);
+        List<ResponseUsers> userList = new List<ResponseUsers>();
+        foreach (Guid id in users)
+        {
+            var temp = await _factory.GetGrain<IUserGrains>(id).GetAsync(id);
+            userList.Add(new ResponseUsers(temp.CreatedAt, temp.UserName, temp.TokenName, temp.IsReceived, temp.TokenList, temp.Follows, temp.Followers, temp.MyToken, temp.DeletedAt));
+        }
+        return Ok(userList);
+    }
+
     [HttpGet("all")]
     public async Task<ActionResult> GetAllAsync()
     {
@@ -30,7 +43,7 @@ public class UserController : ControllerBase
             userList.Add(new ResponseUsers(temp.CreatedAt, temp.UserName, temp.TokenName, temp.IsReceived, temp.TokenList, temp.Follows, temp.Followers, temp.MyToken, temp.DeletedAt));
         }
 
-        return Ok(JsonSerializer.Serialize(userList));
+        return Ok(userList);
     }
 
     [HttpGet("page/{page}")]

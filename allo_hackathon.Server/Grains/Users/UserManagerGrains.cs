@@ -52,6 +52,20 @@ public class UserManagerGrain : Grain, IUserManagerGrain
         return Task.FromResult(_state.State.Name2Id[name]);
     }
 
+    public Task<List<Guid>> SerchUserAsync(string serch)
+    {
+        List<string> data = new List<string>(_state.State.Name2Id.Keys);
+        List<Guid> res = new List<Guid>();
+        foreach(var name in data)
+        {
+            if (name.Contains(serch))
+            {
+                res.Add(_state.State.Name2Id[name]);
+            }
+        }
+        return Task.FromResult(res);
+    }
+
     [GenerateSerializer]
     public class UsersState
     {
