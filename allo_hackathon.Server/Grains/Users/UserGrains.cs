@@ -24,7 +24,7 @@ public class UserGrain : Grain, IUserGrains
 
     public Task<Users> GetAsync(Guid guid)
     {
-        return Task.FromResult(_state.State.Users[guid]);
+        return Task.FromResult(_state.State.User);
     }
 
     //public Task<List<Users>> GetAllAsync()
@@ -43,7 +43,7 @@ public class UserGrain : Grain, IUserGrains
         }
 
         // save the item
-        _state.State.Users.Add(users.Key, users);
+        _state.State.User = users;
         await _state.WriteStateAsync();
 
         // register the item with its owner list
@@ -62,9 +62,9 @@ public class UserGrain : Grain, IUserGrains
         //    .Ignore();
     }
 
-    public Task<List<string>> GetFollowsAsync() => Task.FromResult(_state.State.Users[GrainKey].Follows);
+    public Task<List<string>> GetFollowsAsync() => Task.FromResult(_state.State.User.Follows);
 
-    public Task<List<string>> GetFollowersAsync() => Task.FromResult(_state.State.Users[GrainKey].Followers);
+    public Task<List<string>> GetFollowersAsync() => Task.FromResult(_state.State.User.Followers);
 
 
     public async Task<List<string>> AddFollowAsync(string myName, string followName)
@@ -74,10 +74,11 @@ public class UserGrain : Grain, IUserGrains
         {
             throw new InvalidOperationException();
         }
-        _state.State.Users[uuid].Follows.Add(followName);
+        _state.State.User.Follows.Add(followName);
         var followUuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(followName);
         await GrainFactory.GetGrain<IUserGrains>(followUuid).AddFollowerAsync(followName, myName);
         //await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(myName);
+        await _state.WriteStateAsync();
         return await this.GetFollowsAsync();
     }
 
@@ -88,7 +89,7 @@ public class UserGrain : Grain, IUserGrains
         {
             throw new InvalidOperationException();
         }
-        _state.State.Users[uuid].Followers.Add(followName);
+        _state.State.User.Followers.Add(followName);
         //return await this.GetFollowersAsync();
     }
 
@@ -99,10 +100,11 @@ public class UserGrain : Grain, IUserGrains
         {
             throw new InvalidOperationException();
         }
-        _state.State.Users[uuid].Follows.Remove(followName);
+        _state.State.User.Follows.Remove(followName);
         var followUuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(followName);
         await GrainFactory.GetGrain<IUserGrains>(followUuid).RemoveFollowerAsync(followName, myName);
         //await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(myName);
+        await _state.WriteStateAsync();
         return await this.GetFollowsAsync();
     }
 
@@ -113,17 +115,43 @@ public class UserGrain : Grain, IUserGrains
         {
             throw new InvalidOperationException();
         }
-        _state.State.Users[uuid].Followers.Remove(followName);
+        _state.State.User.Followers.Remove(followName);
         //return await this.GetFollowersAsync();
+    }
+
+    public async Task AddTokenAsync(string tokenName, double cost)
+    {
+        if (!_state.State.User.TokenList.ContainsKey(tokenName))
+        {
+            _state.State.User.TokenList.Add(tokenName, cost);
+        }
+        else
+        {
+            _state.State.User.TokenList[tokenName] += cost;
+        }
+        await _state.WriteStateAsync();
+    }
+
+    public async Task RemoveTokenAsync(string tokenName, double cost)
+    {
+        if (!_state.State.User.TokenList.ContainsKey(tokenName))
+        {
+            return;
+        }
+        else
+        {
+            _state.State.User.TokenList[tokenName] -= cost;
+        }
+        await _state.WriteStateAsync();
     }
 
     [GenerateSerializer]
     public class UserState
     {
         [Id(0)]
-        //public Users User { get; set; }
+        public Users User { get; set; }
         //public HashSet<Users> Users { get; set; } = new();
-        public Dictionary<Guid, Users> Users = new Dictionary<Guid, Users>();
+        //public Dictionary<Guid, Users> Users = new Dictionary<Guid, Users>();
     }
 }
 
