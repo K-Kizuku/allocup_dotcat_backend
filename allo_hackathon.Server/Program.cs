@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Orleans.Persistence.AzureStorage;
 using System.Configuration;
 
+//private IConfiguration _configuration;
+
 await Host.CreateDefaultBuilder(args)
     .UseOrleans((ctx, builder) =>
     {
@@ -17,8 +19,9 @@ await Host.CreateDefaultBuilder(args)
         configureOptions: options =>
         {
             //options.UseJson = true;
+            //var sss = ctx.Configuration["CONNECTION_STRING"];
             options.ConfigureTableServiceClient(
-                System.Configuration.ConfigurationManager.AppSettings["CONNECTION_STRING"] ?? "");
+            System.Configuration.ConfigurationManager.AppSettings["CONNECTION_STRING"] ?? ctx.Configuration["CONNECTION_STRING"]);
         });
     })
     .ConfigureWebHostDefaults(webBuilder =>
