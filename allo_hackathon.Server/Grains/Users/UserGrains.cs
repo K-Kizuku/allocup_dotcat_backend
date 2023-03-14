@@ -22,9 +22,10 @@ public class UserGrain : Grain, IUserGrains
         _state = state;
     }
 
-    public Task<Users> GetAsync(Guid guid)
+    public async Task<Users> GetAsync(Guid guid)
     {
-        return Task.FromResult(_state.State.User);
+        await _state.ReadStateAsync();
+        return await Task.FromResult(_state.State.User);
     }
 
     public async Task SetAsync(Users users)

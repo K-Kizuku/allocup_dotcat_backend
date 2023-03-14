@@ -12,7 +12,7 @@ public class TransactionManagerGrain : Grain, ITransactionManagerGrain
     private string GrainKey = "Transactions";
 
     public TransactionManagerGrain(
-        [PersistentState("TransactionsState")] IPersistentState<TransactionsState> state) => _state = state;
+        [PersistentState("TransactionsState", "strage")] IPersistentState<TransactionsState> state) => _state = state;
 
     public async Task RegisterAsync(Transaction transaction)
     {
