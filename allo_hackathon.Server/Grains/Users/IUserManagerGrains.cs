@@ -4,7 +4,7 @@ namespace Server.Grains;
 
 public interface IUserManagerGrain : IGrainWithStringKey
 {
-    Task RegisterAsync(Guid userId, string name);
+    Task RegisterAsync(Guid userId, string name, string token);
     Task UnregisterAsync(Guid userId, string name);
 
     Task<List<Guid>> GetAllAsync();
@@ -12,4 +12,5 @@ public interface IUserManagerGrain : IGrainWithStringKey
     Task<Guid> GetUserIdAsync(string name);
     Task<List<Guid>> GetPageAsync(int page);
     Task<List<Guid>> SerchUserAsync(string serch);
+    Task<bool> CheckReqAsync(Guid guid, string name, string token);
 }

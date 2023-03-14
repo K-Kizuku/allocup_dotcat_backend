@@ -91,6 +91,10 @@ public class UserController : ControllerBase
             return BadRequest(ModelState);
         }
 
+        if(await _factory.GetGrain<IUserManagerGrain>("Users").CheckReqAsync(model.Key, model.UserName, model.TokenName)){
+            return BadRequest(model);
+        }
+
         var user = new Users(model.Key, DateTime.Now, model.UserName, model.TokenName, false, new Dictionary<string, double>() { { model.TokenName, 10} }, new List<string>(), new List<string>(), 10.0, null);
         await _factory.GetGrain<IUserGrains>(model.Key).SetAsync(user);
         return Ok(user);

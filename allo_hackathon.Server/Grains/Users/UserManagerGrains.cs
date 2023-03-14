@@ -13,10 +13,11 @@ public class UserManagerGrain : Grain, IUserManagerGrain
     public UserManagerGrain(
         [PersistentState("UsersState")] IPersistentState<UsersState> state) => _state = state;
 
-    public async Task RegisterAsync(Guid userId, string name)
+    public async Task RegisterAsync(Guid userId, string name, string token)
     {
         _state.State.Users.Add(userId);
         _state.State.Name2Id.Add(name, userId);
+        _state.State.Token.Add(token);
         await _state.WriteStateAsync();
     }
 
@@ -66,10 +67,28 @@ public class UserManagerGrain : Grain, IUserManagerGrain
         return Task.FromResult(res);
     }
 
+    public Task<bool> CheckReqAsync(Guid guid, string name, string token)
+    {
+        if (_state.State.Name2Id.ContainsKey(name))
+        {
+            return Task.FromResult(true);
+        }
+        if(_state.State.Token.IndexOf(token) >= 0)
+        {
+            return Task.FromResult(true);
+        }
+        if (_state.State.Users.Contains(guid))
+        {
+            return Task.FromResult(true);
+        }
+        return Task.FromResult(false);
+    }
+
     [GenerateSerializer]
     public class UsersState
     {
         [Id(0)]
+        public List<string> Token { get; set; } = new();
         public HashSet<Guid> Users { get; set; } = new();
         public SortedDictionary<string, Guid> Name2Id { get; set; } = new();
     }
