@@ -7,10 +7,11 @@ public interface IUserGrains : IGrainWithGuidKey
 {
     Task SetAsync(Users users);
 
-    //Task ClearAsync();
-
     Task<Users> GetAsync(Guid guid);
 
-    //Task<List<Users>> GetAllAsync();
+    Task<List<string>> AddFollowAsync(string myName, string followName);
+    Task AddFollowerAsync(string myName, string followName);
+    Task<List<string>> GetFollowsAsync();
+    Task<List<string>> GetFollowersAsync();
 }
 

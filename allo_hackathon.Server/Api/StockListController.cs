@@ -41,8 +41,6 @@ public class StockListController : ControllerBase
     public record class StockListModel(
     [Required] Guid OwnerKey,
     [Required] string Title,
-    [Required] double Cost,
-    [Required] DateTime? CreatedAt,
-    [Required] DateTime? DeletedAt = null);
+    [Required] double Cost);
 }
 
