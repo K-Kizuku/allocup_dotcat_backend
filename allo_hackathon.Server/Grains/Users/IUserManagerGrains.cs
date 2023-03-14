@@ -4,8 +4,10 @@ namespace Server.Grains;
 
 public interface IUserManagerGrain : IGrainWithStringKey
 {
-    Task RegisterAsync(Guid userId);
-    Task UnregisterAsync(Guid userId);
+    Task RegisterAsync(Guid userId, string name);
+    Task UnregisterAsync(Guid userId, string name);
 
     Task<List<Guid>> GetAllAsync();
+    Task<string> GetUserNameAsync(Guid guid);
+    Task<Guid> GetUserIdAsync(string name);
 }
