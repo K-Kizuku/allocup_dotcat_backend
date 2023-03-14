@@ -31,6 +31,19 @@ public class UserController : ControllerBase
         return userList;
     }
 
+    [HttpGet("page/{page}")]
+    public async Task<ActionResult> GetPagedUsersAsync([Required] string page)
+    {
+        List<Guid> users = await _factory.GetGrain<IUserManagerGrain>("Users").GetPageAsync(int.Parse(page));
+        List<ResponseUsers> userList = new List<ResponseUsers>();
+        foreach (Guid id in users)
+        {
+            var temp = await _factory.GetGrain<IUserGrains>(id).GetAsync(id);
+            userList.Add(new ResponseUsers(temp.CreatedAt, temp.UserName, temp.TokenName, temp.IsReceived, temp.TokenList, temp.Follows, temp.Followers, temp.MyToken, temp.DeletedAt));
+        }
+        return Ok(userList);
+    }
+
     [HttpPost("follow")]
     public async Task<ActionResult> PostFollowsAsync([FromBody] FollowModel model)
     {
@@ -63,10 +76,23 @@ public class UserController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var user = new Users(model.Key, DateTime.Now, model.UserName, model.TokenName, false, new Dictionary<string, double>(), new List<string>(), new List<string>(), 0.0, null);
+        var user = new Users(model.Key, DateTime.Now, model.UserName, model.TokenName, false, new Dictionary<string, double>() { { model.TokenName, 10} }, new List<string>(), new List<string>(), 10.0, null);
         await _factory.GetGrain<IUserGrains>(model.Key).SetAsync(user);
         return Ok(user);
     }
+
+    [HttpPost("add_token")]
+    public async Task<ActionResult> PostAddTokenAsync([FromBody] TokenAddModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var uuid = await _factory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(model.myName);
+        await _factory.GetGrain<IUserGrains>(uuid).AddTokenAsync(model.myName, model.cost);
+        return Ok();
+    }
+
     public record class UsersModel(
     [Required] Guid Key,
     [Required] string UserName,
@@ -75,4 +101,9 @@ public class UserController : ControllerBase
     public record class FollowModel(
     [Required] string myName,
     [Required] string otherName);
+
+    public record class TokenAddModel(
+    [Required] string myName,
+    [Required] string tokenName,
+    [Required] double cost);
 }

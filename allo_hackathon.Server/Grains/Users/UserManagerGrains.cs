@@ -28,7 +28,14 @@ public class UserManagerGrain : Grain, IUserManagerGrain
     }
 
     public Task<List<Guid>> GetAllAsync() =>
-        Task.FromResult(new List<Guid>(_state.State.Users));
+        Task.FromResult(new List<Guid>(_state.State.Name2Id.Values));
+
+    public Task<List<Guid>> GetPageAsync(int page)
+    {
+        List<Guid> data = new List<Guid>(_state.State.Name2Id.Values);
+        List<Guid> pagedData = data.Skip(page * 20).Take(20).ToList();
+        return Task.FromResult(pagedData);
+    }
 
     public async Task<string> GetUserNameAsync(Guid guid)
     {
@@ -50,7 +57,7 @@ public class UserManagerGrain : Grain, IUserManagerGrain
     {
         [Id(0)]
         public HashSet<Guid> Users { get; set; } = new();
-        public Dictionary<string, Guid> Name2Id { get; set; } = new();
+        public SortedDictionary<string, Guid> Name2Id { get; set; } = new();
     }
 }
 

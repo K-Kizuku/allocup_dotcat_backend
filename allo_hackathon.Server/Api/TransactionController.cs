@@ -48,7 +48,7 @@ public class TransactionController : ControllerBase
         Guid guid = Guid.NewGuid();
         var transaction = new Transaction(guid, model.TokenName, DateTime.Now, model.SendFrom, model.SendTo, model.Cost, model.IsFarst);
         await _factory.GetGrain<ITransactionGrains>(guid).SetAsync(transaction);
-        return Ok();
+        return Ok(transaction);
     }
 
     public record class TransactionModel(

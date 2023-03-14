@@ -10,4 +10,5 @@ public interface IUserManagerGrain : IGrainWithStringKey
     Task<List<Guid>> GetAllAsync();
     Task<string> GetUserNameAsync(Guid guid);
     Task<Guid> GetUserIdAsync(string name);
+    Task<List<Guid>> GetPageAsync(int page);
 }

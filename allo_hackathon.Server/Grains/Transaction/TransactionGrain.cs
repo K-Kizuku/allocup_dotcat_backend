@@ -2,6 +2,7 @@
 using Server.Models;
 using Server.Grains;
 using System.Collections.Immutable;
+using System.Xml.Linq;
 
 namespace Server.Grains;
 
@@ -38,7 +39,15 @@ public class TransactionGrain : Grain, ITransactionGrains
 
         // save the item
         _state.State.Transaction = transaction;
+        var fromUuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(transaction.SendFrom);
+        var toUuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(transaction.SendTo);
+        await GrainFactory.GetGrain<IUserGrains>(fromUuid).RemoveTokenAsync(transaction.TokenName, transaction.Cost);
+        await GrainFactory.GetGrain<IUserGrains>(toUuid).AddTokenAsync(transaction.TokenName, transaction.Cost);
+
+
         await _state.WriteStateAsync();
+
+
 
         // register the item with its owner list
         await GrainFactory.GetGrain<ITransactionManagerGrain>("Transaction")
