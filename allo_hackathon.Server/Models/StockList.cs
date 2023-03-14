@@ -3,8 +3,7 @@
 [Immutable]
 [GenerateSerializer]
 public record class StockList(
-    Guid OwnerId,
-    string TokenName,
+    string Title,
     double Cost,
     DateTime? CreatedAt,
     DateTime? DeletedAt = null);

@@ -5,7 +5,7 @@ namespace Server.Grains;
 
 public interface IStockListGrains : IGrainWithGuidKey
 {
-    Task SetAsync(StockList stockList);
+    Task SetAsync(StockList stockList, Guid guid);
 
     Task<List<StockList>> GetAsync();
 

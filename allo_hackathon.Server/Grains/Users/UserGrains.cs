@@ -48,7 +48,7 @@ public class UserGrain : Grain, IUserGrains
 
         // register the item with its owner list
         await GrainFactory.GetGrain<IUserManagerGrain>("Users")
-            .RegisterAsync(users.Key);
+            .RegisterAsync(users.Key, users.UserName);
 
         //// for sample debugging
         //_logger.LogInformation(

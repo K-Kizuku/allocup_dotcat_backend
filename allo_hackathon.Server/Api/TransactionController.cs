@@ -31,6 +31,13 @@ public class TransactionController : ControllerBase
         return transactionList;
     }
 
+    [HttpGet("my/{name}")]
+    public async Task<List<MyTransactionList>> GetAsync([Required] string name)
+    {
+        var uuid = await _factory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(name);
+        return await _factory.GetGrain<ITransactionManagerGrain>("Transaction").GetMyTransactionListsAsync(name);
+    }
+
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] TransactionModel model)
     {
