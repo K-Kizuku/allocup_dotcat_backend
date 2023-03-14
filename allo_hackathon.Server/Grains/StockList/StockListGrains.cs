@@ -24,7 +24,7 @@ public class StockListGrain : Grain, IStockListGrains
 
     public Task<List<StockList>> GetAsync()
     {
-        return Task.FromResult(_state.State.stockList);
+        return Task.FromResult(new List<StockList>(_state.State.stockList.Values));
     }
 
 
@@ -38,7 +38,7 @@ public class StockListGrain : Grain, IStockListGrains
         }
 
         // save the item
-        _state.State.stockList.Add(stockList);
+        _state.State.stockList.Add(stockList.Guid, stockList);
         await _state.WriteStateAsync();
 
         //// for sample debugging
@@ -53,11 +53,22 @@ public class StockListGrain : Grain, IStockListGrains
         //    .Ignore();
     }
 
+    public async Task EditAsync(StockList stockList, Guid guid)
+    {
+        if (guid != GrainKey)
+        {
+            throw new InvalidOperationException();
+        }
+        _state.State.stockList[stockList.Guid] = stockList;
+        await _state.WriteStateAsync();
+    }
+
     [GenerateSerializer]
     public class StockListState
     {
         [Id(0)]
-        public List<StockList> stockList { get; set; }
+        //public List<StockList> stockList { get; set; }
+        public Dictionary<Guid, StockList> stockList { get; set; } = new();
     }
 }
 

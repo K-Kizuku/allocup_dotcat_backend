@@ -30,15 +30,31 @@ public class StockListController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        var stockList = new StockList(model.Title, model.Cost, DateTime.Now);
+        Guid guid = Guid.NewGuid();
+        var stockList = new StockList(guid, model.Title, model.Cost, DateTime.Now);
         await _factory.GetGrain<IStockListGrains>(model.OwnerKey).SetAsync(stockList, model.OwnerKey);
-        return Ok();
+        return Ok(stockList);
     }
 
-    //[HttpPost("edit")]
-    //public Task<>
+    [HttpPost("edit")]
+    public async Task<ActionResult> EditAsync([FromBody] StockListEditModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var stockList = new StockList(model.Key, model.Title, model.Cost, DateTime.Now);
+        await _factory.GetGrain<IStockListGrains>(model.OwnerKey).SetAsync(stockList, model.OwnerKey);
+        return Ok(stockList);
+    }
 
     public record class StockListModel(
+    [Required] Guid OwnerKey,
+    [Required] string Title,
+    [Required] double Cost);
+
+    public record class StockListEditModel(
+    [Required] Guid Key,
     [Required] Guid OwnerKey,
     [Required] string Title,
     [Required] double Cost);
