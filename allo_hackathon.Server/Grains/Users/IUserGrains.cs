@@ -13,5 +13,7 @@ public interface IUserGrains : IGrainWithGuidKey
     Task AddFollowerAsync(string myName, string followName);
     Task<List<string>> GetFollowsAsync();
     Task<List<string>> GetFollowersAsync();
+    Task<List<string>> RemoveFollowAsync(string myName, string followName);
+    Task RemoveFollowerAsync(string myName, string followName);
 }
 

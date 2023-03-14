@@ -92,6 +92,31 @@ public class UserGrain : Grain, IUserGrains
         //return await this.GetFollowersAsync();
     }
 
+    public async Task<List<string>> RemoveFollowAsync(string myName, string followName)
+    {
+        var uuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(myName);
+        if (uuid != GrainKey)
+        {
+            throw new InvalidOperationException();
+        }
+        _state.State.Users[uuid].Follows.Remove(followName);
+        var followUuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(followName);
+        await GrainFactory.GetGrain<IUserGrains>(followUuid).RemoveFollowerAsync(followName, myName);
+        //await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(myName);
+        return await this.GetFollowsAsync();
+    }
+
+    public async Task RemoveFollowerAsync(string myName, string followName)
+    {
+        var uuid = await GrainFactory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(myName);
+        if (uuid != GrainKey)
+        {
+            throw new InvalidOperationException();
+        }
+        _state.State.Users[uuid].Followers.Remove(followName);
+        //return await this.GetFollowersAsync();
+    }
+
     [GenerateSerializer]
     public class UserState
     {
