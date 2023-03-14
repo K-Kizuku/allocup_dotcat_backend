@@ -4,6 +4,7 @@ using Server.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Immutable;
 using Orleans;
+using System.Reflection;
 //using Server.Grains;
 
 namespace Server.Silo.Api;
@@ -48,6 +49,17 @@ public class StockListController : ControllerBase
         return Ok(stockList);
     }
 
+    [HttpDelete]
+    public async Task<ActionResult> RemoveAsync([FromBody] StockListRemoveModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        await _factory.GetGrain<IStockListGrains>(model.OwnerKey).RemoveAsync(model.ListKey);
+        return Ok(model);
+    }
+
     public record class StockListModel(
     [Required] Guid OwnerKey,
     [Required] string Title,
@@ -58,5 +70,10 @@ public class StockListController : ControllerBase
     [Required] Guid OwnerKey,
     [Required] string Title,
     [Required] double Cost);
+
+
+    public record class StockListRemoveModel(
+    [Required] Guid OwnerKey,
+    [Required] Guid ListKey);
 }
 

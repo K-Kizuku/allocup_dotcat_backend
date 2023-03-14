@@ -63,6 +63,16 @@ public class StockListGrain : Grain, IStockListGrains
         await _state.WriteStateAsync();
     }
 
+    public async Task RemoveAsync(Guid guid)
+    {
+        //if (guid != GrainKey)
+        //{
+        //    throw new InvalidOperationException();
+        //}
+        _state.State.stockList.Remove(guid);
+        await _state.WriteStateAsync();
+    }
+
     [GenerateSerializer]
     public class StockListState
     {
