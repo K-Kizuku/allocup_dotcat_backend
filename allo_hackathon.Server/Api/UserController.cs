@@ -43,6 +43,18 @@ public class UserController : ControllerBase
         return Ok(res);
     }
 
+    [HttpDelete("follow")]
+    public async Task<ActionResult> DeleteFollowsAsync([FromBody] FollowModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var uuid = await _factory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(model.myName);
+        var res = await _factory.GetGrain<IUserGrains>(uuid).RemoveFollowAsync(model.myName, model.otherName);
+        return Ok(res);
+    }
+
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] UsersModel model)
     {
