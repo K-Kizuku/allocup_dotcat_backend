@@ -13,15 +13,17 @@ public class UserManagerGrain : Grain, IUserManagerGrain
     public UserManagerGrain(
         [PersistentState("UsersState")] IPersistentState<UsersState> state) => _state = state;
 
-    public async Task RegisterAsync(Guid userId)
+    public async Task RegisterAsync(Guid userId, string name)
     {
         _state.State.Users.Add(userId);
+        _state.State.Name2Id.Add(name, userId);
         await _state.WriteStateAsync();
     }
 
-    public async Task UnregisterAsync(Guid userId)
+    public async Task UnregisterAsync(Guid userId, string name)
     {
         _state.State.Users.Remove(userId);
+        _state.State.Name2Id.Remove(name);
         await _state.WriteStateAsync();
     }
 
@@ -34,11 +36,21 @@ public class UserManagerGrain : Grain, IUserManagerGrain
         return temp.UserName;
     }
 
+    public Task<Guid> GetUserIdAsync(string name)
+    {
+        if (!_state.State.Name2Id.ContainsKey(name))
+        {
+            throw new InvalidOperationException();
+        }
+        return Task.FromResult(_state.State.Name2Id[name]);
+    }
+
     [GenerateSerializer]
     public class UsersState
     {
         [Id(0)]
         public HashSet<Guid> Users { get; set; } = new();
+        public Dictionary<string, Guid> Name2Id { get; set; } = new();
     }
 }
 

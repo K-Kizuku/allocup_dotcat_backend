@@ -25,7 +25,7 @@ public class UserController : ControllerBase
         foreach(Guid id in users)
         {
             var temp = await _factory.GetGrain<IUserGrains>(id).GetAsync(id);
-            userList.Add(new ResponseUsers(temp.CreatedAt, temp.UserName, temp.TokenName, temp.IsReceived, temp.TokenList, temp.SendTo, temp.SendFrom, temp.MyToken, temp.DeletedAt));
+            userList.Add(new ResponseUsers(temp.CreatedAt, temp.UserName, temp.TokenName, temp.IsReceived, temp.TokenList, temp.MyToken, temp.DeletedAt));
         }
         return userList;
     } 
@@ -38,7 +38,7 @@ public class UserController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var user = new Users(model.Key, DateTime.Now, model.UserName, model.TokenName, false,new TokenItem[0], new TokenItem[0], new TokenItem[0], 0.0,null);
+        var user = new Users(model.Key, DateTime.Now, model.UserName, model.TokenName, false,new Dictionary<string,double>(), 0.0,null);
         await _factory.GetGrain<IUserGrains>(model.Key).SetAsync(user);
         return Ok();
     }
