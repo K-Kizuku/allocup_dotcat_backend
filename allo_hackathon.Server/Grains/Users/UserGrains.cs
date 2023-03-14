@@ -27,13 +27,6 @@ public class UserGrain : Grain, IUserGrains
         return Task.FromResult(_state.State.User);
     }
 
-    //public Task<List<Users>> GetAllAsync()
-    //{
-    //    var UserList = new List<Users>(_state.State.Users.Values);
-    //    return Task.FromResult(UserList);
-
-    //}
-
     public async Task SetAsync(Users users)
     {
         // ensure the key is consistent
@@ -150,8 +143,6 @@ public class UserGrain : Grain, IUserGrains
     {
         [Id(0)]
         public Users User { get; set; }
-        //public HashSet<Users> Users { get; set; } = new();
-        //public Dictionary<Guid, Users> Users = new Dictionary<Guid, Users>();
     }
 }
 

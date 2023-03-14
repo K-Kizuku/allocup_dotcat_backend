@@ -67,6 +67,19 @@ public class UserController : ControllerBase
         await _factory.GetGrain<IUserGrains>(model.Key).SetAsync(user);
         return Ok(user);
     }
+
+    [HttpPost("add_token")]
+    public async Task<ActionResult> PostAddTokenAsync([FromBody] TokenAddModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var uuid = await _factory.GetGrain<IUserManagerGrain>("Users").GetUserIdAsync(model.myName);
+        await _factory.GetGrain<IUserGrains>(uuid).AddTokenAsync(model.myName, model.cost);
+        return Ok();
+    }
+
     public record class UsersModel(
     [Required] Guid Key,
     [Required] string UserName,
@@ -75,4 +88,9 @@ public class UserController : ControllerBase
     public record class FollowModel(
     [Required] string myName,
     [Required] string otherName);
+
+    public record class TokenAddModel(
+    [Required] string myName,
+    [Required] string tokenName,
+    [Required] double cost);
 }
