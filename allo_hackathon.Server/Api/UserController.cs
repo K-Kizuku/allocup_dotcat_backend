@@ -31,6 +31,19 @@ public class UserController : ControllerBase
         return userList;
     }
 
+    [HttpGet("page/{page}")]
+    public async Task<ActionResult> GetPagedUsersAsync([Required] string page)
+    {
+        List<Guid> users = await _factory.GetGrain<IUserManagerGrain>("Users").GetPageAsync(int.Parse(page));
+        List<ResponseUsers> userList = new List<ResponseUsers>();
+        foreach (Guid id in users)
+        {
+            var temp = await _factory.GetGrain<IUserGrains>(id).GetAsync(id);
+            userList.Add(new ResponseUsers(temp.CreatedAt, temp.UserName, temp.TokenName, temp.IsReceived, temp.TokenList, temp.Follows, temp.Followers, temp.MyToken, temp.DeletedAt));
+        }
+        return Ok(userList);
+    }
+
     [HttpPost("follow")]
     public async Task<ActionResult> PostFollowsAsync([FromBody] FollowModel model)
     {

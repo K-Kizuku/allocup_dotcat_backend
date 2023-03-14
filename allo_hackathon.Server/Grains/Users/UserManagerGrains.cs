@@ -30,6 +30,13 @@ public class UserManagerGrain : Grain, IUserManagerGrain
     public Task<List<Guid>> GetAllAsync() =>
         Task.FromResult(new List<Guid>(_state.State.Name2Id.Values));
 
+    public Task<List<Guid>> GetPageAsync(int page)
+    {
+        List<Guid> data = new List<Guid>(_state.State.Name2Id.Values);
+        List<Guid> pagedData = data.Skip(page * 20).Take(20).ToList();
+        return Task.FromResult(pagedData);
+    }
+
     public async Task<string> GetUserNameAsync(Guid guid)
     {
         var temp = await GrainFactory.GetGrain<IUserGrains>(guid).GetAsync(guid);
