@@ -44,7 +44,7 @@ public class StockListController : ControllerBase
             return BadRequest(ModelState);
         }
         var stockList = new StockList(model.Key, model.Title, model.Cost, DateTime.Now);
-        await _factory.GetGrain<IStockListGrains>(model.OwnerKey).SetAsync(stockList, model.OwnerKey);
+        await _factory.GetGrain<IStockListGrains>(model.OwnerKey).EditAsync(stockList, model.OwnerKey);
         return Ok(stockList);
     }
 
