@@ -47,6 +47,8 @@ await Host.CreateDefaultBuilder(args)
                                     "http://localhost:62653",
                                     "http://localhost:62654",
                                     "http://localhost:5171",
+                                    "http://localhost:4280",
+
                                     "https://icy-rock-0099e6b00.2.azurestaticapps.net",
                                     "https://brave-field-0f0f09e00.2.azurestaticapps.net"
                                     )
