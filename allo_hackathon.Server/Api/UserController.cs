@@ -3,6 +3,7 @@ using Server.Grains;
 using Server.Models;
 using System.ComponentModel.DataAnnotations;
 using Orleans;
+using System.Text.Json;
 //using Server.Grains;
 
 namespace Server.Silo.Api;
@@ -19,7 +20,7 @@ public class UserController : ControllerBase
     public Task<Users> GetAsync([Required] Guid uuid) => _factory.GetGrain<IUserGrains>(uuid).GetAsync(uuid);
 
     [HttpGet("all")]
-    public async Task<List<ResponseUsers>> GetAllAsync()
+    public async Task<ActionResult> GetAllAsync()
     {
         List<ResponseUsers> userList = new List<ResponseUsers>();
         var users = await _factory.GetGrain<IUserManagerGrain>("Users").GetAllAsync();
@@ -28,7 +29,8 @@ public class UserController : ControllerBase
             var temp = await _factory.GetGrain<IUserGrains>(id).GetAsync(id);
             userList.Add(new ResponseUsers(temp.CreatedAt, temp.UserName, temp.TokenName, temp.IsReceived, temp.TokenList, temp.Follows, temp.Followers, temp.MyToken, temp.DeletedAt));
         }
-        return userList;
+
+        return Ok(JsonSerializer.Serialize(userList));
     }
 
     [HttpGet("page/{page}")]
