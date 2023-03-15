@@ -123,6 +123,8 @@ public class UserGrain : Grain, IUserGrains
         {
             _state.State.User.TokenList[tokenName] += cost;
         }
+        _state.State.User = new Users(_state.State.User.Key, _state.State.User.CreatedAt, _state.State.User.UserName, _state.State.User.TokenName,
+            _state.State.User.IsReceived, _state.State.User.TokenList, _state.State.User.Follows, _state.State.User.Followers, _state.State.User.TokenList[_state.State.User.TokenName]);
         await _state.WriteStateAsync();
     }
 
@@ -136,6 +138,8 @@ public class UserGrain : Grain, IUserGrains
         {
             _state.State.User.TokenList[tokenName] -= cost;
         }
+        _state.State.User = new Users(_state.State.User.Key, _state.State.User.CreatedAt, _state.State.User.UserName, _state.State.User.TokenName,
+            _state.State.User.IsReceived, _state.State.User.TokenList, _state.State.User.Follows, _state.State.User.Followers, _state.State.User.TokenList[_state.State.User.TokenName]);
         await _state.WriteStateAsync();
     }
 
