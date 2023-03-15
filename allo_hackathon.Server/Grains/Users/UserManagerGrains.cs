@@ -85,6 +85,15 @@ public class UserManagerGrain : Grain, IUserManagerGrain
         return await Task.FromResult(false);
     }
 
+    public async Task GiveTokenAsync()
+    {
+        foreach(Guid guid in _state.State.Users)
+        {
+            var user = await GrainFactory.GetGrain<IUserGrains>(guid).GetAsync(guid);
+            await GrainFactory.GetGrain<IUserGrains>(guid).AddTokenAsync(user.TokenName, 10);
+        }
+    }
+
     [GenerateSerializer]
     public class UsersState
     {

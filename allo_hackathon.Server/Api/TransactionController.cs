@@ -38,6 +38,13 @@ public class TransactionController : ControllerBase
         return await _factory.GetGrain<ITransactionManagerGrain>("Transaction").GetMyTransactionListsAsync(name);
     }
 
+    [HttpGet("give")]
+    public async Task<ActionResult> GiveTokenAsync()
+    {
+        await _factory.GetGrain<IUserManagerGrain>("Users").GiveTokenAsync();
+        return Ok();
+    }
+
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] TransactionModel model)
     {

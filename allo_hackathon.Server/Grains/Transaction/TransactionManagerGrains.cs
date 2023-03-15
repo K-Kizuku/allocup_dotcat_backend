@@ -47,6 +47,7 @@ public class TransactionManagerGrain : Grain, ITransactionManagerGrain
 
     public Task<List<MyTransactionList>> GetMyTransactionListsAsync(string name) => Task.FromResult(_state.State.MyTransactionList[name]);
 
+
     [GenerateSerializer]
     public class TransactionsState
     {
