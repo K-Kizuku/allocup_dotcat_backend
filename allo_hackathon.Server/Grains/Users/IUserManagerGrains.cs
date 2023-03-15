@@ -13,4 +13,5 @@ public interface IUserManagerGrain : IGrainWithStringKey
     Task<List<Guid>> GetPageAsync(int page);
     Task<List<Guid>> SerchUserAsync(string serch);
     Task<bool> CheckReqAsync(Guid guid, string name, string token);
+    Task GiveTokenAsync();
 }
